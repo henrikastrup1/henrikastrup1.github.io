@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Henrik Astrup — Projekter &amp; Dashboards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f3ee;
+    --surface: #ffffff;
+    --surface-hover: #f0ede6;
+    --ink: #2c2416;
+    --ink-secondary: #7a6e5a;
+    --border: #e0d8c8;
+    --accent: #1a4d2e;
+    --accent-soft: rgba(26,77,46,0.08);
+    --tag-sommerhus: #d6336c;
+    --tag-kommunalt: #1565c0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-hover: 0 4px 16px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06);
+    --radius: 12px;
+    --transition: 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-theme="dark"] {
+    --bg: #181410;
+    --surface: #24201a;
+    --surface-hover: #2d2821;
+    --ink: #e8e0d0;
+    --ink-secondary: #9e927e;
+    --border: #363028;
+    --accent: #4caf7a;
+    --accent-soft: rgba(76,175,122,0.1);
+    --shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.3);
+    --shadow-hover: 0 4px 16px rgba(0,0,0,0.4), 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    transition: background var(--transition), color var(--transition);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    top: 20px; right: 20px;
+    z-index: 100;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+  }
+  .theme-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .hero {
+    text-align: center;
+    padding: 80px 24px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .hero .greeting {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.2rem;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+  }
+
+  .hero .subtitle {
+    font-size: 1.1rem;
+    color: var(--ink-secondary);
+    margin-top: 16px;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 400;
+  }
+
+  .hero .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 28px;
+    font-size: 0.85rem;
+    color: var(--ink-secondary);
+  }
+  .hero .stats span strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .divider {
+    max-width: 80px;
+    margin: 0 auto;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.3;
+  }
+
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .section-header .icon { font-size: 1.4rem; }
+
+  .section-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+  }
+
+  .section-header .count {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-secondary);
+    background: var(--accent-soft);
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin-left: auto;
+  }
+
+  .cards {
+    display: grid;
+    gap: 12px;
+  }
+
+  .cards.two { grid-template-columns: repeat(2, 1fr); }
+  .cards.four { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+  .card.tag-sommerhus::before { background: var(--tag-sommerhus); }
+  .card.tag-kommunalt::before { background: var(--tag-kommunalt); }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--ink);
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card .tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    align-self: flex-start;
+    margin-bottom: 4px;
+  }
+  .card .tag.sommerhus { background: rgba(214,51,108,0.1); color: var(--tag-sommerhus); }
+  .card .tag.kommunalt { background: rgba(21,101,192,0.1); color: var(--tag-kommunalt); }
+
+  .card .card-title { font-size: 1rem; font-weight: 600; line-height: 1.3; }
+  .card .card-desc { font-size: 0.8rem; color: var(--ink-secondary); line-height: 1.5; flex: 1; }
+  .card .card-url { font-size: 0.7rem; color: var(--ink-secondary); font-family: 'SF Mono', 'Fira Code', monospace; opacity: 0.6; margin-top: 4px; }
+  .card .card-icon { font-size: 1.6rem; line-height: 1; margin-bottom: 2px; }
+
+  .page-footer {
+    text-align: center;
+    padding: 40px 24px 50px;
+    color: var(--ink-secondary);
+    font-size: 0.78rem;
+    font-style: italic;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (max-width: 900px) {
+    .cards.four { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .hero { padding: 60px 20px 30px; }
+    .hero h1 { font-size: 2.2rem; }
+    .hero .stats { flex-direction: column; align-items: center; gap: 6px; }
+    .cards.two, .cards.four { grid-template-columns: 1fr; }
+    .section { padding: 24px 16px; }
+    .section-header h2 { font-size: 1.3rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Skift tema">🌙</button>
+
+<header class="hero">
+  <div class="greeting">Henrik Astrup</div>
+  <h1>Projekter &amp; Dashboards</h1>
+  <p class="subtitle">Interaktive dashboards, kalendere og data-værktøjer — bygget til Hvidovre Kommune og sommerhuset 🏖️</p>
+  <div class="stats">
+    <span>📊 <strong>6</strong> projekter</span>
+    <span>🏷️ <strong>2</strong> kategorier</span>
+    <span>📅 Siden <strong>2025</strong></span>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-header">
+    <span class="icon">🏖️</span>
+    <h2>Sommerhus</h2>
+    <span class="count">2 projekter</span>
+  </div>
+  <div class="cards two">
+    <a class="card tag-sommerhus" href="https://henrikastrup1.github.io/sommerhus-2026/" target="_blank" rel="noopener">
+      <span class="tag sommerhus">Booking</span>
+      <span class="card-icon">📅</span>
+      <span class="card-title">Bookingskema 2026–2030</span>
+      <span class="card-desc">Uge-for-uge bjælke med farvekodning, månedsvisning og dropdown til år. Se turnus for Birgit, Henrik og Hanne på tværs af flere år.</span>
+      <span class="card-url">sommerhus-2026</span>
+    </a>
+    <a class="card tag-sommerhus" href="https://henrikastrup1.github.io/sommerhus-vaegkalender/" target="_blank" rel="noopener">
+      <span class="tag sommerhus">Kalender</span>
+      <span class="card-icon">🗓️</span>
+      <span class="card-title">Vægkalender</span>
+      <span class="card-desc">Gammeldags vægkalender med 12 måneder på ét skærmbillede, klikbare filtre pr. ejer, helligdage fra Google Kalender og skoleferier.</span>
+      <span class="card-url">sommerhus-vaegkalender</span>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <span class="icon">📊</span>
+    <h2>Kommunale Dashboards</h2>
+    <span class="count">4 projekter</span>
+  </div>
+  <div class="cards four">
+    <a class="card tag-kommunalt" href="https://henrikastrup1.github.io/hvidovre-befolkningsdashboard/" target="_blank" rel="noopener">
+      <span class="tag kommunalt">Demografi</span>
+      <span class="card-icon">👥</span>
+      <span class="card-title">Befolkningsdashboard</span>
+      <span class="card-desc">Interaktiv befolkningsudvikling for Hvidovre — data fra Danmarks Statistik FOLK1AM med alder, køn og årgange.</span>
+      <span class="card-url">hvidovre-befolkningsdashboard</span>
+    </a>
+    <a class="card tag-kommunalt" href="https://henrikastrup1.github.io/trivselsdashboard-hvidovre/" target="_blank" rel="noopener">
+      <span class="tag kommunalt">Trivsel</span>
+      <span class="card-icon">📈</span>
+      <span class="card-title">Trivselsdashboard</span>
+      <span class="card-desc">Sammenligning af trivsel på skoler i Hvidovre vs Greve — interaktive grafer og filtre.</span>
+      <span class="card-url">trivselsdashboard-hvidovre</span>
+    </a>
+    <a class="card tag-kommunalt" href="https://henrikastrup1.github.io/sygedagpenge-hvidovre/" target="_blank" rel="noopener">
+      <span class="tag kommunalt">Beskæftigelse</span>
+      <span class="card-icon">💼</span>
+      <span class="card-title">Sygedagpenge Hvidovre</span>
+      <span class="card-desc">Oversigt over sygedagpenge-modtagere 2025–2026 — data fra Jobindsats API.</span>
+      <span class="card-url">sygedagpenge-hvidovre</span>
+    </a>
+    <a class="card tag-kommunalt" href="https://henrikastrup1.github.io/adagpenge-hvidovre/" target="_blank" rel="noopener">
+      <span class="tag kommunalt">Beskæftigelse</span>
+      <span class="card-icon">🔍</span>
+      <span class="card-title">A-dagpenge Hvidovre</span>
+      <span class="card-desc">Oversigt over a-dagpengemodtagere i 2026 — data fra Jobindsats API med månedlige opgørelser.</span>
+      <span class="card-url">adagpenge-hvidovre</span>
+    </a>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <p>Bygget med ❤️ — Henrik Astrup · Hvidovre Kommune</p>
+</footer>
+
+<script>
+(function(){
+  const t=document.getElementById('themeToggle'),h=document.documentElement;
+  const s=localStorage.getItem('theme'),p=window.matchMedia('(prefers-color-scheme: dark)').matches,th=s||(p?'dark':'light');
+  h.setAttribute('data-theme',th);t.textContent=th==='dark'?'☀️':'🌙';
+  t.addEventListener('click',()=>{const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('theme',n);t.textContent=n==='dark'?'☀️':'🌙';});
+})();
+</script>
+</body>
+</html>
